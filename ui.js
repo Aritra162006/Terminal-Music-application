@@ -26,11 +26,25 @@ class UI {
             }
         });
 
-        this.songList = blessed.list({
+        this.nowPlaying = blessed.box({
             top: 3,
             left: 'center',
             width: '100%',
-            height: '100%-3',
+            height: 4,
+            content: '\n  No track playing',
+            tags: true,
+            border: { type: 'line' },
+            style: {
+                border: { fg: 'cyan' },
+                fg: 'white'
+            }
+        });
+
+        this.songList = blessed.list({
+            top: 7,
+            left: 'center',
+            width: '100%',
+            height: '100%-7',
             items: [],
             keys: true,
             vi: true,
@@ -44,6 +58,7 @@ class UI {
         });
 
         this.screen.append(this.header);
+        this.screen.append(this.nowPlaying);
         this.screen.append(this.songList);
 
         this.screen.key(['escape', 'q', 'C-c'], () => {
@@ -75,6 +90,11 @@ class UI {
                 }
             }
         }
+        this.screen.render();
+    }
+
+    setNowPlaying(title, artist) {
+        this.nowPlaying.setContent(`\n  ▶ ${title} - ${artist}`);
         this.screen.render();
     }
 }
