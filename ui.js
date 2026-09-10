@@ -31,7 +31,6 @@ class UI {
             left: 'center',
             width: '100%',
             height: 4,
-            content: '\n  No track playing',
             tags: true,
             border: { type: 'line' },
             style: {
@@ -39,6 +38,38 @@ class UI {
                 fg: 'white'
             }
         });
+
+        this.trackInfo = blessed.text({
+            top: 0,
+            left: 2,
+            width: '100%-4',
+            content: 'No track playing',
+            tags: true
+        });
+
+        this.progressBar = blessed.progressbar({
+            top: 1,
+            left: 2,
+            width: '100%-6',
+            height: 1,
+            orientation: 'horizontal',
+            style: {
+                bar: { bg: 'magenta' },
+                bg: 'black'
+            },
+            filled: 0
+        });
+
+        this.timeText = blessed.text({
+            top: 1,
+            right: 2,
+            content: '0:00 / 0:00',
+            style: { fg: 'white' }
+        });
+
+        this.nowPlaying.append(this.trackInfo);
+        this.nowPlaying.append(this.progressBar);
+        this.nowPlaying.append(this.timeText);
 
         this.songList = blessed.list({
             top: 7,
@@ -94,8 +125,25 @@ class UI {
     }
 
     setNowPlaying(title, artist) {
-        this.nowPlaying.setContent(`\n  ▶ ${title} - ${artist}`);
+        this.trackInfo.setContent(`▶ ${title} - ${artist}`);
+        this.progressBar.setProgress(0);
+        this.timeText.setContent('0:00 / 0:00');
         this.screen.render();
+    }
+
+    updateProgress(elapsed, total) {
+        if (total > 0) {
+            const percent = (elapsed / total) * 100;
+            this.progressBar.setProgress(percent);
+            this.timeText.setContent(`${this.formatTime(elapsed)} / ${this.formatTime(total)}`);
+            this.screen.render();
+        }
+    }
+
+    formatTime(seconds) {
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${mins}:${secs.toString().padStart(2, '0')}`;
     }
 }
 

@@ -44,6 +44,27 @@ async function main() {
         else playSong(0);
     });
 
+    ui.screen.key(['right'], () => {
+        audio.seekForward(10);
+    });
+
+    ui.screen.key(['left'], () => {
+        audio.seekBackward(10);
+    });
+
+    audio.on('time', (elapsed) => {
+        if (playingIndex !== -1) {
+            const track = ui.tracks[playingIndex];
+            ui.updateProgress(elapsed, track.duration);
+        }
+    });
+
+    audio.on('end', () => {
+        if (playingIndex !== -1) {
+            playSong(playingIndex + 1);
+        }
+    });
+
     ui.songList.focus();
 }
 
