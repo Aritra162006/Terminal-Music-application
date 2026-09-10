@@ -21,7 +21,8 @@ async function main() {
         
         audio.play(track.path);
         ui.setNowPlaying(track.title, track.artist);
-        ui.songList.select(playingIndex); // highlight current song
+        ui.songList.select(playingIndex);
+        isPaused = false;
         ui.screen.render();
     }
     
@@ -30,8 +31,13 @@ async function main() {
         playSong(index);
     });
 
+    let isPaused = false;
+
     ui.screen.key(['space'], () => {
+        if (playingIndex === -1) return;
         audio.pause();
+        isPaused = !isPaused;
+        ui.setPaused(isPaused);
     });
 
     ui.screen.key(['n'], () => {
