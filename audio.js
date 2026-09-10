@@ -18,6 +18,12 @@ class AudioPlayer {
         this.process.stdin.write(`load ${filePath}\n`);
     }
 
+    pause() {
+        if (!this.process) return;
+        // Sending 'pause' toggles play/pause state in mpg123
+        this.process.stdin.write(`pause\n`);
+    }
+
     quit() {
         if (this.process) {
             this.process.kill('SIGKILL');
